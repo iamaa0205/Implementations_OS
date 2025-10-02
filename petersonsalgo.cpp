@@ -1,6 +1,9 @@
 // Peterson’s Algorithm is a classic software-based solution for the critical section problem in operating systems. It ensures mutual exclusion between two processes
 // It guarantees: 1. Mutual Exclusion 2. Progress 3. Bounded Waiting
 
+// Can be extended to multiple processes using filter algorithm (don't study)
+// Can also use Ticket lock but it uses fetch-and-add atomic instruction
+
 #include <iostream>
 #include <thread>
 
@@ -20,7 +23,9 @@ void algo(int id){
     flag[id] = true;
     turn = 1-id;
 
-    while(flag[other] && turn==other);
+    while(flag[other] && turn==other){
+        // can yeild cpu here to increase performance
+    }
     //critical section
     for(int i=0;i<1e7;i++) counter++;
     cout<<"Process "<<id<<" is in critical section"<<endl;
