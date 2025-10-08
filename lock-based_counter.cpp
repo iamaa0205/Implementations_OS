@@ -26,3 +26,8 @@ int getvalue(){
 int main(){
     return 0;
 }
+
+// can be scaled with approximate counter, taking one global lock,global counter, local lock and counter for each CPU. Now every thread running on CPU acquires corresponding lock and increments corresponding counter until specific threshold. Then it increments it in global counter setting local to 0 again.
+// At any time maximum erorr possible in global counter is no. of CPU* threshold
+// can get exact if all locks acquired in order but is not scalable
+
