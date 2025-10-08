@@ -25,6 +25,7 @@ void algo(int id){
 
     while(flag[other] && turn==other){
         // can yeild cpu here to increase performance
+        // if cpu yeild is used then memory ordering instrtuction is also required to maintain correct order of instruction execution
     }
     //critical section
     for(int i=0;i<1e7;i++) counter++;
