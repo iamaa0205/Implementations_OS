@@ -11,7 +11,7 @@ class Queue{
     public:
     void insert(T value){
         std::lock_guard<std::mutex> mymtx(mtx);
-        q.push(value); // can use std::move like 
+        q.push(std::move(value)); // can use std::move like 
         // q.push(std::move(value));
         cv.notify_one();
     }
@@ -22,7 +22,7 @@ class Queue{
         // provide some additional flexibilities like calling unlock and maybe call lock later using std::defer_lock
         while(q.empty()) cv.wait(mymtx); // there can be spurious wakeups therefore while loop nneded to check empty consition again 
         // cv.wait(mymtx,[this] {return !q.empty();}); //can also pass like this pedicate in wait function
-        T val = q.front(); // can use std::move here also
+        T val = std::move(q.front()); // can use std::move here also
         q.pop();
         return val;
     }
