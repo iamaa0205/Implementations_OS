@@ -26,10 +26,11 @@ class TSQueue{
     }
 
     T consume(){
+        T val;
         {
             std::unique_lock<std::mutex> mymtx(mtx);
             c_cv.wait(mymtx, [this] {return !(count==0);});
-            T val = std::move(buffer[c_idx]);
+            val = std::move(buffer[c_idx]);
             c_idx = (c_idx+1)%BUFFER_SIZE;
             count--;
         }
@@ -41,6 +42,7 @@ class TSQueue{
     }
 
 };
+// can't use different lock for producer and consumer because count is shared variable and data race might happen
 
 template <typename T, size_t size>
 void producer(TSQueue<T, size>& q) {
