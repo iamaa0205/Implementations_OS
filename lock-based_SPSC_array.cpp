@@ -13,7 +13,7 @@ class TSQueue{
     T buffer[BUFFER_SIZE];
 
     public:
-    void produce(T value){
+    void produce(T &value){
         std::unique_lock<std::mutex> mymtx(mtx);
         p_cv.wait(mymtx, [this] {return !(count==BUFFER_SIZE);});
         buffer[p_idx] = std::move(value);
