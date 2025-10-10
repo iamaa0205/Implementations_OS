@@ -26,12 +26,16 @@ class TSQueue{
     }
 
     T consume(){
-        std::unique_lock<std::mutex> mymtx(mtx);
-        c_cv.wait(mymtx, [this] {return !(count==0);});
-        T val = std::move(buffer[c_idx]);
-        c_idx = (c_idx+1)%BUFFER_SIZE;
-        count--;
-        mymtx.unlock();
+        {
+            std::unique_lock<std::mutex> mymtx(mtx);
+            c_cv.wait(mymtx, [this] {return !(count==0);});
+            T val = std::move(buffer[c_idx]);
+            c_idx = (c_idx+1)%BUFFER_SIZE;
+            count--;
+        }
+        // {} automatically unlocks the code by RAII principles
+        // needed before calling notify_one
+        // mymtx.unlock();
         p_cv.notify_one();
         return val;
     }
