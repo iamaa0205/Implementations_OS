@@ -1,5 +1,6 @@
 #include <iostream>
 #include <thread>
+// Assumption: This same implementation works for SPMC, MPSC and MPMC as well given that any thread can produce and any one consumer can consume.
 
 template <typename T, size_t BUFFER_SIZE> // size_t is unsigned int normally used to represent size of data structures
 class TSQueue{
