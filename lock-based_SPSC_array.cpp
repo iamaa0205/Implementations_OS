@@ -21,6 +21,7 @@ class TSQueue{
         count++;
         mymtx.unlock();  // need to unlock before as then consume thread may sleep again
         // can use scoping also so that unique lock goes out of scope and unlocks
+        // improves performance also
         c_cv.notify_one();
     }
 
