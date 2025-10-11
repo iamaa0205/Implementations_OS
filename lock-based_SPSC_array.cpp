@@ -14,15 +14,16 @@ class TSQueue{
     T buffer[BUFFER_SIZE];
 
     public:
-    void produce(T &value){
+    // In this function i am moving a lvalue reference which may produce UB in caller, there use T value instead of T& value and then std::move
+    void produce(T value){
         std::unique_lock<std::mutex> mymtx(mtx);
         p_cv.wait(mymtx, [this] {return !(count==BUFFER_SIZE);});
         buffer[p_idx] = std::move(value);
+        // std::move enables moving — it doesn’t do the move itself.
         p_idx = (p_idx+1)%BUFFER_SIZE;
         count++;
         mymtx.unlock();  // need to unlock before as then consume thread may sleep again
         // can use scoping also so that unique lock goes out of scope and unlocks
-        // improves performance also
         c_cv.notify_one();
     }
 
@@ -35,7 +36,7 @@ class TSQueue{
             c_idx = (c_idx+1)%BUFFER_SIZE;
             count--;
         }
-        // {} automatically unlocks the code by RAII principles
+        // {} automatically unlocks the code by RAII principles, better for performance
         // needed before calling notify_one
         // mymtx.unlock();
         p_cv.notify_one();
